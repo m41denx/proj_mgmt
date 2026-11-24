@@ -1,0 +1,65 @@
+@startuml
+skinparam backgroundColor white-white
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+title Сплит — варианты использования
+
+actor "Посетитель" as Visitor
+actor "Пользователь\nс учётной записью" as Account
+actor "Участник группы" as Member
+actor "Организатор" as Owner
+actor "Приглашённый" as Invitee
+
+Owner --|> Member
+
+rectangle "Сплит" {
+  package "Вход и группы" {
+    usecase "UC01\nРегистрация" as UC01
+    usecase "UC02\nВход" as UC02
+    usecase "UC03\nСоздание группы" as UC03
+    usecase "UC04\nПриглашение и присоединение" as UC04
+  }
+  package "Расходы" {
+    usecase "UC05\nДобавление расхода" as UC05
+    usecase "UC06\nРедактирование расхода" as UC06
+    usecase "UC07\nУдаление расхода" as UC07
+    usecase "UC08\nРасчёт долей" as UC08
+  }
+  package "Балансы и история" {
+    usecase "UC09\nПросмотр баланса" as UC09
+    usecase "UC10\nПлан переводов" as UC10
+    usecase "UC11\nОтметка погашения" as UC11
+    usecase "UC12\nИстория операций" as UC12
+  }
+}
+
+Visitor --> UC01
+Visitor --> UC02
+Account --> UC03
+Owner --> UC04
+Invitee --> UC04
+Member --> UC05
+Member --> UC06
+Member --> UC07
+Member --> UC09
+Member --> UC10
+Member --> UC11
+Member --> UC12
+
+UC05 ..> UC08 : <<include>>
+UC06 ..> UC08 : <<include>>
+UC05 -[hidden]down-> UC06
+UC06 -[hidden]down-> UC07
+UC11 -[hidden]down-> UC12
+
+note bottom of Member
+  Участник действует в своей группе.
+  Изменять расход может его автор
+  или организатор.
+end note
+
+legend bottom
+  Перевод денег выполняется вне приложения.
+endlegend
+@enduml
